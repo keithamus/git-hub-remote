@@ -1,0 +1,52 @@
+#!/bin/bash
+user=`git config github.user`
+token=`git config github.token`
+giturl=`git config github.gitUrl`
+#trim:
+user=${user%/}
+token=${token%/}
+giturl=${giturl%/}
+reponame=${1%/}
+remotename=${2%/}
+private=0
+
+if [ "$1" == "--private" ]; then
+	reponame=${2%/}
+	remotename=${3%/}
+	private=1
+elif [ "$2" == "--private" ]; then
+	remotename=${3%/}
+	private=1
+elif [ "$3" == "--private" ]; then
+	private=1
+fi
+
+
+if [ "$reponame" == "" ]; then
+	echo 'Usage: git hub-remote REPOSITORYNAME [REMOTENAME]'
+	echo '(REMOTENAME is optional and defaults to origin)'
+	exit 1
+fi
+
+if [ "$user" == "" ]; then
+	echo 'User has not been set. Try running: git config --global github.user myusername'
+	exit 1
+fi
+
+if [ "$token" == "" ]; then
+	echo 'Token has not been set. Try running: git config --global github.token mytoken'
+	exit 1
+fi
+
+if [ "$remotename" == "" ]; then
+	remotename="origin"
+fi
+
+if [ "$giturl" == "" ]; then
+	giturl="git@github.com"
+	git config --global github.gitUrl git@github.com
+fi
+
+curl -s -F "login=$user" -F "token=$token" -F "name=$reponame" -F "private=$private" http://github.com/api/v2/json/repos/create 2&>1
+git remote add $remotename $giturl:$user/$reponame
+echo "Repo $urser/$reponame created and added as $remotename inside this git directory"
