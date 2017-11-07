@@ -1,3 +1,6 @@
+> # No Longer Actively Maintained
+> If someone would like to take over maintainence, feel free to get in touch ([@keithamus on twitter](https://twitter.com/keithamus)). I'll happily transfer this over.
+
 This is a quick bash script to create a git repository on your github account, 
 while also adding it to your remote.
 
